@@ -1,3 +1,3 @@
-const baseUrl = "https://2d63-16-170-254-227.ngrok-free.app/api/";
+const baseUrl = "https://petsforhome-backend.onrender.com/api/";
 
 export { baseUrl };

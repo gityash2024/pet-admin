@@ -13,7 +13,7 @@ instance.interceptors.request.use(
       config.headers["x-access-token"] = userData;
       config.headers["authorization"] = `Bearer ${userData}`;
     }
-    config.headers["ngrok-skip-browser-warning"] = true;
+    // config.headers["ngrok-skip-browser-warning"] = true;
     console.log(config);
     return config;
   },
