@@ -170,9 +170,12 @@ function ArticleList() {
               onChange={handleCategoryChange}
             >
               <MenuItem value="all">All</MenuItem>
-              <MenuItem value="Technology">Technology</MenuItem>
-              <MenuItem value="Health">Health</MenuItem>
-              <MenuItem value="Lifestyle">Lifestyle</MenuItem>
+               <MenuItem value="Training">Training</MenuItem>
+                          <MenuItem value="Health">Health</MenuItem>
+                          <MenuItem value="Lifestyle">Lifestyle</MenuItem>
+                          <MenuItem value="Nutrition">Nutrition</MenuItem>
+                          <MenuItem value="Care">Care</MenuItem>
+                          <MenuItem value="Behavior">Behavior</MenuItem>
             </Select>
           </FormControl>
           <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleAddNew}>

@@ -82,7 +82,7 @@ function FormArticle({ article, onSave, onClose }) {
 
   return (
     <>
-      <DialogTitle>{article ? 'Edit Article' : 'Add New Article'}</DialogTitle>
+      <DialogTitle>{article ? 'Edit Article' : 'Add New Blog'}</DialogTitle>
       <DialogContent>
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
           <TextField
@@ -102,9 +102,12 @@ function FormArticle({ article, onSave, onClose }) {
               value={formData.category}
               onChange={handleChange}
             >
-              <MenuItem value="Technology">Technology</MenuItem>
+              <MenuItem value="Training">Training</MenuItem>
               <MenuItem value="Health">Health</MenuItem>
               <MenuItem value="Lifestyle">Lifestyle</MenuItem>
+              <MenuItem value="Nutrition">Nutrition</MenuItem>
+              <MenuItem value="Care">Care</MenuItem>
+              <MenuItem value="Behavior">Behavior</MenuItem>
             </Select>
           </FormControl>
           <ReactQuill
