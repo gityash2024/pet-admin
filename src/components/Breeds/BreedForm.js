@@ -5,7 +5,8 @@ import {
 } from '@mui/material';
 import { toast } from 'react-toastify';
 
-function BreedForm({ pet, onSave, onClose }) {
+function BreedForm({ pet, onSave, onClose, categories }) {
+  console.log(categories,'----------------______-___---___---__---___--')
   const [formData, setFormData] = useState({
     name: '',
     category: '',
@@ -59,7 +60,7 @@ function BreedForm({ pet, onSave, onClose }) {
         throw new Error(`Failed to upload file: ${response.statusText}`);
       }
       const responseData = await response.json();
-      const uploadedUrl = responseData.url;
+      const uploadedUrl = responseData.fileUrl;
       setImageUrl(uploadedUrl);
     } catch (error) {
       toast.error(`Error uploading file: ${error.message}`);
@@ -91,19 +92,21 @@ function BreedForm({ pet, onSave, onClose }) {
             onChange={handleChange}
             required
           />
-          <FormControl fullWidth margin="normal" required>
-            <InputLabel id="category-label">Category</InputLabel>
-            <Select
-              labelId="category-label"
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-            >
-              <MenuItem value="Dog">Dog</MenuItem>
-              <MenuItem value="Cat">Cat</MenuItem>
-              <MenuItem value="Fish">Fish</MenuItem>
-            </Select>
-          </FormControl>
+        <FormControl fullWidth margin="normal" required>
+    <InputLabel id="category-label">Category</InputLabel>
+    <Select
+      labelId="category-label"
+      name="category"
+      value={formData.category}
+      onChange={handleChange}
+    >
+      {categories.map((cat) => (
+        <MenuItem key={cat._id} value={cat.name}>
+          {cat.name}
+        </MenuItem>
+      ))}
+    </Select>
+  </FormControl>
           <TextField
             fullWidth
             margin="normal"

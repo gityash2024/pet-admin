@@ -12,7 +12,7 @@ import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
 import PetsIcon from '@mui/icons-material/Pets';
 import BreedForm from './BreedForm';
-import { getAllPets, addPets, updatePets, deletePets } from 'utils/api';
+import { getAllPets, addPets, updatePets, deletePets, getAllCategories } from 'utils/api';
 import { toast } from 'react-toastify';
 import Loader from 'components/Loader/Loader';
 
@@ -51,7 +51,23 @@ function BreedList() {
   const [nameFilter, setNameFilter] = useState('');
   const [page, setPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [categories, setCategories] = useState([]);
 
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+  
+  const fetchCategories = async () => {
+    try {
+      const response = await getAllCategories();
+      setCategories(response.data.categories|| []);
+    } catch (error) {
+      console.error('Failed to fetch categories:', error);
+    }
+  };
+
+  
   useEffect(() => {
     fetchPets();
   }, []);
@@ -149,16 +165,18 @@ function BreedList() {
           <FormControl sx={{ minWidth: 120 }}>
             <InputLabel id="category-select-label">Category</InputLabel>
             <Select
-              labelId="category-select-label"
-              value={category}
-              label="Category"
-              onChange={handleCategoryChange}
-            >
-              <MenuItem value="all">All</MenuItem>
-              <MenuItem value="Dog">Dog</MenuItem>
-              <MenuItem value="Cat">Cat</MenuItem>
-              <MenuItem value="Fish">Fish</MenuItem>
-            </Select>
+  labelId="category-select-label"
+  value={category}
+  label="Category"
+  onChange={handleCategoryChange}
+>
+  <MenuItem value="all">All</MenuItem>
+  {categories.map((cat) => (
+    <MenuItem key={cat._id} value={cat.name}>
+      {cat.name}
+    </MenuItem>
+  ))}
+</Select>
           </FormControl>
           <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleAddNew}>
             Add New Pet
@@ -243,11 +261,12 @@ function BreedList() {
       )}
 
       <Dialog open={openForm} onClose={() => setOpenForm(false)} maxWidth="md" fullWidth>
-        <BreedForm 
-          pet={selectedPet} 
-          onSave={handleSavePet} 
-          onClose={() => setOpenForm(false)} 
-        />
+      <BreedForm 
+  pet={selectedPet} 
+  onSave={handleSavePet} 
+  onClose={() => setOpenForm(false)}
+  categories={categories}
+/>
       </Dialog>
       {loading && <Loader />}
     </Box>

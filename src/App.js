@@ -17,6 +17,7 @@ import AuthGuard from './components/Auth/AuthGuard';
 import theme from './theme';
 import ToastContainer from './components/Toast/ToastContainer';
 import ArticleList from 'components/Articles/ListArticles';
+import CategoryList from 'components/Categories/CategoryList';
 
 const PermissionGuard = ({ children, requiredPermission }) => {
   const permissions = JSON.parse(localStorage.getItem('permission') || '[]');
@@ -114,6 +115,11 @@ function App() {
               <Route path="knowledge-hub" element={
                 <AdminGuard>
                   <ArticleList />
+                </AdminGuard>
+              } />
+               <Route path="categories" element={
+                <AdminGuard>
+                  <CategoryList />
                 </AdminGuard>
               } />
               <Route path="*" element={<Navigate to={getInitialRoute()} replace />} />

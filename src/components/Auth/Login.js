@@ -106,7 +106,7 @@ function Login() {
         localStorage.setItem('token', response.data.token);
         if(response.data.admin.role === 'admin') {
           localStorage.setItem('userData', JSON.stringify(response.data.admin));
-        localStorage.setItem('permission', JSON.stringify(['dashboard', 'users', 'adverts', 'accessories', 'knowledge', 'pets', 'messages', 'roles']));
+        localStorage.setItem('permission', JSON.stringify(['dashboard', 'users', 'adverts', 'accessories', 'knowledge', 'pets', 'messages', 'roles', 'categories']));
         }else{
           localStorage.setItem('permission', JSON.stringify(response.data?.admin.permissions));
         }

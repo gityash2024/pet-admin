@@ -7,7 +7,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { toast } from 'react-toastify';
 
-function FormArticle({ article, onSave, onClose }) {
+function FormArticle({ article, onSave, onClose, categories }) {
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -62,7 +62,7 @@ function FormArticle({ article, onSave, onClose }) {
         throw new Error(`Failed to upload file: ${response.statusText}`);
       }
       const responseData = await response.json();
-      const uploadedUrl = responseData.url;
+      const uploadedUrl = responseData.fileUrl;
       setImageUrl(uploadedUrl);
     } catch (error) {
       toast.error(`Error uploading file: ${error.message}`);
@@ -95,21 +95,20 @@ function FormArticle({ article, onSave, onClose }) {
             required
           />
           <FormControl fullWidth margin="normal" required>
-            <InputLabel id="category-label">Category</InputLabel>
-            <Select
-              labelId="category-label"
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-            >
-              <MenuItem value="Training">Training</MenuItem>
-              <MenuItem value="Health">Health</MenuItem>
-              <MenuItem value="Lifestyle">Lifestyle</MenuItem>
-              <MenuItem value="Nutrition">Nutrition</MenuItem>
-              <MenuItem value="Care">Care</MenuItem>
-              <MenuItem value="Behavior">Behavior</MenuItem>
-            </Select>
-          </FormControl>
+    <InputLabel id="category-label">Category</InputLabel>
+    <Select
+      labelId="category-label"
+      name="category"
+      value={formData.category}
+      onChange={handleChange}
+    >
+      {categories.map((cat) => (
+        <MenuItem key={cat._id} value={cat.name}>
+          {cat.name}
+        </MenuItem>
+      ))}
+    </Select>
+  </FormControl>
           <ReactQuill
             value={formData.content}
             onChange={handleContentChange}

@@ -14,7 +14,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import FormArticle from './FormArticles';
 import { toast } from 'react-toastify';
 import Loader from 'components/Loader/Loader';
-import { addArticle, updateArticle, deleteArticle, getAllArticles } from 'utils/api';
+import { addArticle, updateArticle, deleteArticle, getAllArticles, getAllCategories } from 'utils/api';
 import DOMPurify from 'dompurify';
 
 const GlassCard = styled(Card)(({ theme }) => ({
@@ -61,6 +61,25 @@ function ArticleList() {
   const [page, setPage] = useState(1);
   const [itemsPerPage] = useState(8);
   const [openContentModal, setOpenContentModal] = useState(false);
+  const [categories, setCategories] = useState([]);
+
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  
+
+  const fetchCategories = async () => {
+    try {
+      const response = await getAllCategories();
+      setCategories(response.data.categories || []);
+    } catch (error) {
+      console.error('Failed to fetch categories:', error);
+    }
+  };
+
+  
 
   useEffect(() => {
     fetchArticles();
@@ -164,19 +183,19 @@ function ArticleList() {
           <FormControl sx={{ minWidth: 120 }}>
             <InputLabel id="category-select-label">Category</InputLabel>
             <Select
-              labelId="category-select-label"
-              value={category}
-              label="Category"
-              onChange={handleCategoryChange}
-            >
-              <MenuItem value="all">All</MenuItem>
-               <MenuItem value="Training">Training</MenuItem>
-                          <MenuItem value="Health">Health</MenuItem>
-                          <MenuItem value="Lifestyle">Lifestyle</MenuItem>
-                          <MenuItem value="Nutrition">Nutrition</MenuItem>
-                          <MenuItem value="Care">Care</MenuItem>
-                          <MenuItem value="Behavior">Behavior</MenuItem>
-            </Select>
+  labelId="category-select-label"
+  value={category}
+  label="Category"
+  onChange={handleCategoryChange}
+>
+  <MenuItem value="all">All</MenuItem>
+  {categories.map((cat) => (
+    <MenuItem key={cat._id} value={cat.name}>
+      {cat.name}
+    </MenuItem>
+  ))}
+</Select>
+
           </FormControl>
           <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleAddNew}>
             Add New Article
@@ -252,11 +271,12 @@ function ArticleList() {
       )}
 
       <Dialog open={openForm} onClose={() => setOpenForm(false)} maxWidth="md" fullWidth>
-        <FormArticle 
-          article={selectedArticle} 
-          onSave={handleSaveArticle} 
-          onClose={() => setOpenForm(false)} 
-        />
+      <FormArticle 
+  article={selectedArticle} 
+  onSave={handleSaveArticle} 
+  onClose={() => setOpenForm(false)}
+  categories={categories}
+/>
       </Dialog>
 
       <ContentModal

@@ -147,3 +147,20 @@ export const getAllConversations = () => {
 export const sendAdminMessage = (conversationId, message) => {
   return instance.post(`${baseUrl}admin/messages`, { conversationId, message });
 };
+
+// Add these to your existing api.js file
+export const getAllCategories = () => {
+  return instance.get(`${baseUrl}categories`);
+};
+
+export const addCategory = (data) => {
+  return instance.post(`${baseUrl}categories`, data);
+};
+
+export const updateCategory = (id, data) => {
+  return instance.put(`${baseUrl}categories/${id}`, data);
+};
+
+export const deleteCategory = (id) => {
+  return instance.delete(`${baseUrl}categories/${id}`);
+};

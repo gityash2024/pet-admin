@@ -33,6 +33,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const modules = [
   { name: 'Dashboard', value: 'dashboard' },
   { name: 'Users', value: 'users' },
+  { name: 'Categories', value: 'categories' },
   { name: 'Adverts', value: 'adverts' },
   { name: 'Accessories', value: 'accessories' },
   { name: 'Knowledge Hub', value: 'knowledge' },

@@ -50,7 +50,7 @@ function AccessoryForm({ accessory, onSave, onClose }) {
         throw new Error(`Failed to upload file: ${response.statusText}`);
       }
       const responseData = await response.json();
-      const uploadedUrl = responseData.url;
+      const uploadedUrl = responseData.fileUrl;
       setImageUrl(uploadedUrl);
     } catch (error) {
       toast.error(`Error uploading file: ${error.message}`);

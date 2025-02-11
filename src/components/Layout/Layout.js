@@ -4,7 +4,7 @@ import { Box, AppBar, Toolbar, Typography, IconButton, Button, CircularProgress,
 import { styled } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { getAllUsers, getAllAccessories, getAllAdverts, getAllPets, getAllArticles } from 'utils/api';
+import { getAllUsers, getAllAccessories, getAllAdverts, getAllPets, getAllArticles, getAllCategories } from 'utils/api';
 
 import Sidebar from './Sidebar';
 import dogIcon from '../../assets/dog-icon.svg';
@@ -56,6 +56,22 @@ function Layout() {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [statistics, setStatistics] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  
+
+  const fetchCategories = async () => {
+    try {
+      const response = await getAllCategories();
+      setCategories(response.data.categories || []);
+    } catch (error) {
+      console.error('Failed to fetch categories:', error);
+    }
+  };
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -79,6 +95,7 @@ function Layout() {
         { label: 'Adverts', value: advertsResponse?.data.adverts?.length || 0 },
         { label: 'Accessories', value: accessoriesResponse?.data.accessories?.length || 0 },
         { label: 'Pets', value: petsResponse?.data.pets?.length || 0 },
+        {label:'Categories',value:categories.length}
       ];
 
       setStatistics(newStatistics);

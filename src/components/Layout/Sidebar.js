@@ -22,7 +22,8 @@ import {
   Mail as MessagesIcon,
   RollerShades,
   AppBlocking,
-  Article
+  Article,
+  Category
 } from '@mui/icons-material';
 
 const drawerWidth = 240;
@@ -52,12 +53,12 @@ const menuItems = [
   { text: 'Users', icon: <PeopleIcon />, path: '/users', permission: 'users' },
   { text: 'Adverts', icon: <AdvertIcon />, path: '/adverts', permission: 'adverts' },
   { text: 'Accessories', icon: <AccessoryIcon />, path: '/accessories', permission: 'accessories' },
+  { text: 'Categories', icon: <Category />, path: '/categories', permission: 'categories' },  // Move up in the list
   { text: 'Pets', icon: <PetsIcon />, path: '/pets', permission: 'pets' },
   { text: 'Knowledge Hub', icon: <Article />, path: '/knowledge-hub', permission: 'knowledge' },
   { text: 'Messages', icon: <MessagesIcon />, path: '/messages', permission: 'messages' },
   { text: 'Manage Roles', icon: <RollerShades />, path: '/roles', permission: 'roles' },
 ];
-
 const Sidebar = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -74,8 +75,10 @@ const Sidebar = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const filteredMenuItems = menuItems.filter(item => userPermissions.includes(item.permission));
-
+  const filteredMenuItems = menuItems.filter(item => {
+    const userRole = JSON.parse(localStorage.getItem('userData') || '{}').role;
+    return userRole === 'admin' || userPermissions.includes(item.permission);
+  });
   const drawer = (
     <div>
       <List>
