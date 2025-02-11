@@ -49,7 +49,7 @@ function BreedForm({ pet, onSave, onClose }) {
       const formData = new FormData();
       formData.append("file", file);
       const response = await fetch(
-        "https://api.edulley.com/api/upload",
+        "https://chirag-backend.onrender.com/api/files/upload",
         {
           method: "POST",
           body: formData,
