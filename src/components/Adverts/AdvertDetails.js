@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
-  Typography, Box, Paper, Grid, Chip, Button, CircularProgress 
+  Typography, Box, Paper, Grid, Chip, Button, CircularProgress,
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  Divider
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import PetsIcon from '@mui/icons-material/Pets';
@@ -10,6 +12,8 @@ import BuildIcon from '@mui/icons-material/Build';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
 import { toast } from 'react-toastify'; // Update this import based on your toaster library
 import { getAdvertById } from '../../utils/api'; // Update this path as needed
 import Loader from 'components/Loader/Loader';
@@ -34,6 +38,23 @@ const Image = styled('img')({
   height: '100%',
   objectFit: 'cover',
 });
+
+// Add new styled components for pet information
+const DetailRow = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  marginBottom: theme.spacing(1),
+  alignItems: 'center',
+}));
+
+const DetailLabel = styled(Typography)(({ theme }) => ({
+  fontWeight: 'bold',
+  width: '150px',
+  color: theme.palette.text.secondary,
+}));
+
+const DetailValue = styled(Typography)(({ theme }) => ({
+  flex: 1,
+}));
 
 function AdvertDetails() {
   const { id } = useParams();
@@ -149,6 +170,116 @@ function AdvertDetails() {
           </Grid>
         </Grid>
       </StyledPaper>
+      
+      {/* Pet Information Section - Only show for pet category */}
+      {advert.category === 'pet' && (
+        <StyledPaper elevation={3}>
+          <Typography variant="h5" gutterBottom>
+            Pet Information
+          </Typography>
+          <Divider sx={{ mb: 2 }} />
+          
+          <DetailRow>
+            <DetailLabel variant="body1">Species/Breed:</DetailLabel>
+            <DetailValue variant="body1">{advert.breed || 'Not specified'}</DetailValue>
+          </DetailRow>
+          
+          <DetailRow>
+            <DetailLabel variant="body1">Age:</DetailLabel>
+            <DetailValue variant="body1">
+              {advert.age ? `${advert.age} ${advert.ageUnit || 'weeks'}` : 'Not specified'}
+            </DetailValue>
+          </DetailRow>
+          
+          <DetailRow>
+            <DetailLabel variant="body1">Sex:</DetailLabel>
+            <DetailValue variant="body1">
+              {advert.gender ? advert.gender.charAt(0).toUpperCase() + advert.gender.slice(1) : 'Not specified'}
+            </DetailValue>
+          </DetailRow>
+          
+          <DetailRow>
+            <DetailLabel variant="body1">Health Status:</DetailLabel>
+            <DetailValue variant="body1">{advert.healthStatus || 'Not specified'}</DetailValue>
+          </DetailRow>
+          
+          <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>
+            Vaccination Details
+          </Typography>
+          
+          <TableContainer component={Paper} variant="outlined" sx={{ mb: 3 }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Vaccination Type</TableCell>
+                  <TableCell align="center">Status</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow>
+                  <TableCell>First Vaccination</TableCell>
+                  <TableCell align="center">
+                    {advert.vaccinationDetails?.firstVaccination ? (
+                      <CheckCircleIcon color="success" />
+                    ) : (
+                      <CancelIcon color="error" />
+                    )}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Deworming</TableCell>
+                  <TableCell align="center">
+                    {advert.vaccinationDetails?.deworming ? (
+                      <CheckCircleIcon color="success" />
+                    ) : (
+                      <CancelIcon color="error" />
+                    )}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Boosters</TableCell>
+                  <TableCell align="center">
+                    {advert.vaccinationDetails?.boosters ? (
+                      <CheckCircleIcon color="success" />
+                    ) : (
+                      <CancelIcon color="error" />
+                    )}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+          
+          {advert.microchipId && (
+            <DetailRow>
+              <DetailLabel variant="body1">Microchip/Tag ID:</DetailLabel>
+              <DetailValue variant="body1">{advert.microchipId}</DetailValue>
+            </DetailRow>
+          )}
+          
+          {advert.vaccinationCertificates && advert.vaccinationCertificates.length > 0 && (
+            <>
+              <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>
+                Certificates
+              </Typography>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                {advert.vaccinationCertificates.map((cert, index) => (
+                  <Button 
+                    key={index}
+                    variant="outlined" 
+                    color="primary"
+                    href={cert}
+                    target="_blank"
+                  >
+                    Certificate {index + 1}
+                  </Button>
+                ))}
+              </Box>
+            </>
+          )}
+        </StyledPaper>
+      )}
+      
       {loading && <Loader/>}
     </Box>
   );
