@@ -8,7 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { toast } from 'react-toastify';
 import { uploadFile } from '../../utils/fileUpload';
 
-function AdvertForm({ open, onClose, advert = null, onSubmit, users, categories, loading }) {
+function AdvertForm({ open, onClose, advert = null, onSubmit, users, categories }) {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
