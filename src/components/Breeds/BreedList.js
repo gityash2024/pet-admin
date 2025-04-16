@@ -206,6 +206,9 @@ function BreedList() {
                   <StyledTableCell>Category</StyledTableCell>
                   <StyledTableCell>Breed</StyledTableCell>
                   <StyledTableCell>Age</StyledTableCell>
+                  <StyledTableCell>Sex</StyledTableCell>
+                  <StyledTableCell>Health Status</StyledTableCell>
+                  <StyledTableCell>Vaccinations</StyledTableCell>
                   <StyledTableCell align="right">Price</StyledTableCell>
                   <StyledTableCell align="right">Actions</StyledTableCell>
                 </TableRow>
@@ -229,7 +232,22 @@ function BreedList() {
                     </StyledTableCell>
                     <StyledTableCell>{pet.category}</StyledTableCell>
                     <StyledTableCell>{pet.breed}</StyledTableCell>
-                    <StyledTableCell>{pet.age}</StyledTableCell>
+                    <StyledTableCell>{pet.age} {pet.ageUnit || 'weeks'}</StyledTableCell>
+                    <StyledTableCell>{pet.gender ? pet.gender.charAt(0).toUpperCase() + pet.gender.slice(1) : 'Not specified'}</StyledTableCell>
+                    <StyledTableCell>
+                      <Tooltip title={pet.healthStatus || 'Not specified'}>
+                        <TruncatedText>{pet.healthStatus || 'Not specified'}</TruncatedText>
+                      </Tooltip>
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      {pet.vaccinationDetails ? (
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                          {pet.vaccinationDetails.firstVaccination && <Typography variant="caption">First vac.</Typography>}
+                          {pet.vaccinationDetails.deworming && <Typography variant="caption">Deworming</Typography>}
+                          {pet.vaccinationDetails.boosters && <Typography variant="caption">Boosters</Typography>}
+                        </div>
+                      ) : 'None'}
+                    </StyledTableCell>
                     <StyledTableCell align="right">${pet.price?.toFixed(2)}</StyledTableCell>
                    
                     <StyledTableCell align="right">

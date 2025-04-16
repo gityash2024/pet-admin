@@ -17,6 +17,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify';
 import { getAllAdverts, addAdvert, updateAdvert, deleteAdvert, getAdvertById, getAllUsers, publishAdvert, getAllCategories } from '../../utils/api';
 import Loader from 'components/Loader/Loader';
+import AdvertForm from './AdvertForm';
+import { uploadFile } from '../../utils/fileUpload';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
  head: {
@@ -59,6 +61,7 @@ function AdvertList() {
  const [users, setUsers] = useState([]);
  const [imageUrl, setImageUrl] = useState('');
  const [categories, setCategories] = useState([]);
+ const [uploadLoading, setUploadLoading] = useState(false);
 
  useEffect(() => {
    fetchCategories();
@@ -129,26 +132,13 @@ function AdvertList() {
  const handleFileChange = async (event) => {
    const file = event.target.files[0];
    try {
-     setLoading(true);
-     const formData = new FormData();
-     formData.append("file", file);
-     const response = await fetch(
-       "https://chirag-backend.onrender.com/api/files/upload",
-       {
-         method: "POST",
-         body: formData,
-       }
-     );
-     if (!response.ok) {
-       throw new Error(`Failed to upload file: ${response.statusText}`);
-     }
-     const responseData = await response.json();
-     const uploadedUrl = responseData.fileUrl;
-     setImageUrl(uploadedUrl);
+     setUploadLoading(true);
+     const result = await uploadFile(file, localStorage.getItem('token'));
+     setImageUrl(result.fileUrl);
    } catch (error) {
-     toast.error(`Error uploading file: ${error.message}`);
+     // Error is already handled in the uploadFile function
    } finally {
-     setLoading(false);
+     setUploadLoading(false);
    }
  };
 
@@ -390,120 +380,16 @@ function AdvertList() {
        </motion.div>
      )}
 
-     <Dialog open={openForm} onClose={handleCloseForm} maxWidth="sm" fullWidth>
-       <DialogTitle>
-         {editingId ? 'Edit Advert' : 'Add New Advert'}
-         <IconButton
-           onClick={handleCloseForm}
-           sx={{
-             position: 'absolute',
-             right: 8,
-             top: 8,
-             color: (theme) => theme.palette.grey[500],
-           }}
-         >
-           <CloseIcon />
-         </IconButton>
-       </DialogTitle>
-       <DialogContent>
-         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
-           <TextField
-             fullWidth
-             margin="normal"
-             label="Title"
-             name="title"
-             value={formData.title}
-             onChange={handleInputChange}
-             required
-           />
-           <TextField
-             fullWidth
-             margin="normal"
-             label="Description"
-             name="description"
-             value={formData.description}
-             onChange={handleInputChange}
-             multiline
-             rows={4}
-             required
-           />
-           <TextField
-             fullWidth
-             margin="normal"
-             label="Price"
-             name="price"
-             type="number"
-             value={formData.price}
-             onChange={handleInputChange}
-             required
-           />
-           <FormControl fullWidth margin="normal">
-             <InputLabel>Owner (optional)</InputLabel>
-             <Select
-              name="owner"
-              value={formData.owner}
-              onChange={handleInputChange}
-              label="Owner (optional)"
-            >
-              {users.map((user) => (
-                <MenuItem key={user._id} value={user._id}>
-                  {user.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl fullWidth margin="normal" required>
-            <InputLabel>Category</InputLabel>
-            <Select
-              name="category"
-              value={formData.category}
-              onChange={handleInputChange}
-              label="Category"
-            >
-              {categories.map((cat) => (
-                <MenuItem key={cat._id} value={cat.name}>
-                  {cat.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Location"
-            name="location"
-            value={formData.location}
-            onChange={handleInputChange}
-            required
-          />
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            style={{ display: 'none' }}
-            id="image-upload"
-          />
-          <label htmlFor="image-upload">
-            <Button
-              variant="outlined"
-              component="span"
-              fullWidth
-              sx={{ mt: 2 }}
-            >
-              Upload Image
-            </Button>
-          </label>
-          {imageUrl && (
-            <Box sx={{ mt: 2 }}>
-              <img src={imageUrl} alt="Uploaded" style={{ maxWidth: '100%', maxHeight: '200px' }} />
-            </Box>
-          )}
-          <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
-            {editingId ? 'Update' : 'Add'} Advert
-          </Button>
-        </Box>
-      </DialogContent>
-    </Dialog>
+     <Dialog open={openForm} onClose={handleCloseForm} maxWidth="md" fullWidth>
+       <AdvertForm
+         advert={editingId ? {...formData, _id: editingId, image: imageUrl} : null}
+         onClose={handleCloseForm}
+         onSubmit={handleSubmit}
+         users={users}
+         categories={categories}
+         loading={loading}
+       />
+     </Dialog>
     {loading && <Loader />}
   </Box>
 );

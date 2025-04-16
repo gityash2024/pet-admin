@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Typography, Box, TextField, Button, Select, MenuItem, FormControl, 
-  InputLabel, DialogTitle, DialogContent, DialogActions
+  InputLabel, DialogTitle, DialogContent, DialogActions, CircularProgress
 } from '@mui/material';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { toast } from 'react-toastify';
+import { uploadFile } from '../../utils/fileUpload';
 
 function FormArticle({ article, onSave, onClose, categories }) {
   const [formData, setFormData] = useState({
@@ -49,23 +50,10 @@ function FormArticle({ article, onSave, onClose, categories }) {
     const file = event.target.files[0];
     try {
       setLoading(true);
-      const formData = new FormData();
-      formData.append("file", file);
-      const response = await fetch(
-        "https://chirag-backend.onrender.com/api/files/upload",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-      if (!response.ok) {
-        throw new Error(`Failed to upload file: ${response.statusText}`);
-      }
-      const responseData = await response.json();
-      const uploadedUrl = responseData.fileUrl;
-      setImageUrl(uploadedUrl);
+      const result = await uploadFile(file, localStorage.getItem('token'));
+      setImageUrl(result.fileUrl);
     } catch (error) {
-      toast.error(`Error uploading file: ${error.message}`);
+      // Error is already handled in the uploadFile function
     } finally {
       setLoading(false);
     }
@@ -136,8 +124,10 @@ function FormArticle({ article, onSave, onClose, categories }) {
               component="span"
               fullWidth
               sx={{ mt: 2 }}
+              disabled={loading}
+              startIcon={loading ? <CircularProgress size={20} /> : null}
             >
-              Upload Image
+              {loading ? 'Uploading...' : 'Upload Image'}
             </Button>
           </label>
           {imageUrl && (

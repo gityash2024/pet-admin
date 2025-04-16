@@ -250,31 +250,54 @@ function AdvertDetails() {
             </Table>
           </TableContainer>
           
-          {advert.microchipId && (
-            <DetailRow>
-              <DetailLabel variant="body1">Microchip/Tag ID:</DetailLabel>
-              <DetailValue variant="body1">{advert.microchipId}</DetailValue>
-            </DetailRow>
-          )}
-          
+          {/* Vaccination Certificates */}
           {advert.vaccinationCertificates && advert.vaccinationCertificates.length > 0 && (
             <>
               <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>
-                Certificates
+                Vaccination Certificates
               </Typography>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+              
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 3 }}>
                 {advert.vaccinationCertificates.map((cert, index) => (
-                  <Button 
+                  <Button
                     key={index}
-                    variant="outlined" 
+                    variant="outlined"
                     color="primary"
-                    href={cert}
-                    target="_blank"
+                    onClick={() => window.open(cert, '_blank')}
                   >
-                    Certificate {index + 1}
+                    View Certificate {index + 1}
                   </Button>
                 ))}
               </Box>
+            </>
+          )}
+          
+          {/* Veterinary Health Certificate */}
+          {advert.vetHealthCertificate && (
+            <>
+              <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>
+                Veterinary Health Certificate
+              </Typography>
+              
+              <Box sx={{ mb: 3 }}>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => window.open(advert.vetHealthCertificate, '_blank')}
+                >
+                  View Certificate
+                </Button>
+              </Box>
+            </>
+          )}
+          
+          {/* Microchip ID */}
+          {advert.microchipId && (
+            <>
+              <DetailRow>
+                <DetailLabel variant="body1">Microchip/Tag ID:</DetailLabel>
+                <DetailValue variant="body1">{advert.microchipId}</DetailValue>
+              </DetailRow>
             </>
           )}
         </StyledPaper>
